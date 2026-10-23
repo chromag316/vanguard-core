@@ -29,6 +29,10 @@
 #include "Social/SocialMgr.h"
 #include "Server/DBCStores.h"
 
+#ifdef ENABLE_MODULES
+#include "ModuleMgr.h"
+#endif
+
 void WorldSession::SendTradeStatus(TradeStatusInfo const& info) const
 {
     WorldPacket data(SMSG_TRADE_STATUS, 13);
@@ -492,6 +496,10 @@ void WorldSession::HandleAcceptTradeOpcode(WorldPacket& recvPacket)
         _player->SaveInventoryAndGoldToDB();
         trader->SaveInventoryAndGoldToDB();
         CharacterDatabase.CommitTransaction();
+
+#ifdef ENABLE_MODULES
+        sModuleMgr.OnTradeAccepted(_player, trader, my_trade, his_trade);
+#endif
 
         info.Status = TRADE_STATUS_TRADE_COMPLETE;
         trader->GetSession()->SendTradeStatus(info);

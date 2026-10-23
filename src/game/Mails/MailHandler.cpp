@@ -39,6 +39,10 @@
 #include "Chat/Chat.h"
 #include "Anticheat/Anticheat.hpp"
 
+#ifdef ENABLE_MODULES
+#include "ModuleMgr.h"
+#endif
+
 #define MAX_INBOX_CLIENT_UI_CAPACITY 50
 
 bool WorldSession::CheckMailBox(ObjectGuid guid) const
@@ -266,6 +270,10 @@ void WorldSession::HandleSendMail(WorldPacket& recv_data)
     CharacterDatabase.BeginTransaction();
     pl->SaveInventoryAndGoldToDB();
     CharacterDatabase.CommitTransaction();
+
+#ifdef ENABLE_MODULES
+    sModuleMgr.OnSendMail(draft, pl, rc, reqmoney);
+#endif
 }
 
 /**
@@ -486,6 +494,10 @@ void WorldSession::HandleMailTakeItem(WorldPacket& recv_data)
 
         uint32 count = it->GetCount();                      // save counts before store and possible merge with deleting
         pl->MoveItemToInventory(dest, it, true);
+
+#ifdef ENABLE_MODULES
+        sModuleMgr.OnMailTakeItem(m, pl, it, ObjectGuid(HIGHGUID_PLAYER, m->sender));
+#endif
 
         CharacterDatabase.BeginTransaction();
         pl->SaveInventoryAndGoldToDB();
