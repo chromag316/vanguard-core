@@ -28,8 +28,8 @@ if(BUILD_PLAYERBOTS)
   FetchContent_Declare(
     PlayerBots
     SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/modules/PlayerBots"
-    GIT_REPOSITORY "https://github.com/cmangos/playerbots.git"
-    GIT_TAG "master"
+    GIT_REPOSITORY "${PLAYERBOTS_GIT_REPOSITORY}"
+    GIT_TAG "${PLAYERBOTS_GIT_TAG}"
   )
 
   FetchContent_GetProperties(PlayerBots)
@@ -66,6 +66,7 @@ if(BUILD_MODULES)
   foreach(INDEX RANGE ${MODULE_COUNT})
     list(GET MODULE_NAMES ${INDEX} MODULE_NAME)
     list(GET MODULE_URLS ${INDEX} MODULE_URL)
+    list(GET MODULE_TAGS ${INDEX} MODULE_TAG)
 
     string(TOLOWER ${MODULE_NAME} LOWER_MODULE_NAME)
     if(BUILD_MODULE_${MODULE_NAME} OR BUILD_${MODULE_NAME})
@@ -75,7 +76,7 @@ if(BUILD_MODULES)
         ${LOWER_MODULE_NAME}
 		SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/modules/${LOWER_MODULE_NAME}"
         GIT_REPOSITORY "${MODULE_URL}"
-        GIT_TAG "main"
+        GIT_TAG "${MODULE_TAG}"
       )
 
 	  FetchContent_GetProperties(${LOWER_MODULE_NAME})

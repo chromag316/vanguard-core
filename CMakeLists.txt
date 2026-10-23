@@ -87,44 +87,8 @@ if(MSVC)
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 endif()
 
-# Modules setup
-if(BUILD_MODULES)
-  # Download module config file
-  include(FetchContent)
-
-  FetchContent_Declare(
-    modules
-    GIT_REPOSITORY "https://github.com/davidonete/cmangos-modules.git"
-    GIT_TAG "main"
-  )
-
-  if(NOT modules_POPULATED)
-	message(STATUS "Fetching module configuration...")
-    FetchContent_Populate(modules)
-
-    if(EXISTS ${CMAKE_SOURCE_DIR}/src/modules/modules)
-      file(REMOVE_RECURSE ${CMAKE_SOURCE_DIR}/src/modules/modules)
-    endif()
-
-    file(COPY ${modules_SOURCE_DIR}/. DESTINATION ${CMAKE_SOURCE_DIR}/src/modules/modules)
-    message(STATUS "Modules configuration fetched and populated in ${CMAKE_CURRENT_SOURCE_DIR}/src/modules/modules")
-
-    # Read module config file
-    file(READ ${CMAKE_SOURCE_DIR}/src/modules/modules/modules.conf MODULE_CONF)
-    string(REGEX REPLACE "\n" ";" MODULE_CONF_LINES "${MODULE_CONF}")
-    set(MODULE_NAMES)
-    set(MODULE_URLS)
-    foreach(MODULE_CONF_LINE ${MODULE_CONF_LINES})
-      string(REGEX MATCH "([^=]+)=(.*)" _ ${MODULE_CONF_LINE})
-      set(KEY ${CMAKE_MATCH_1})
-      set(VALUE ${CMAKE_MATCH_2})
-      if(NOT KEY STREQUAL "" OR NOT VALUE STREQUAL "")
-        list(APPEND MODULE_NAMES ${KEY})
-        list(APPEND MODULE_URLS ${VALUE})
-      endif()
-    endforeach()
-  endif()
-endif()
+# Vanguard: pinned module list and playerbots commit (needed before options.cmake)
+include(cmake/vanguard-modules.cmake)
 
 # set default buildoptions and print them
 include(cmake/options.cmake)
