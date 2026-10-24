@@ -35,8 +35,8 @@
 #include "PlayerBot/Base/PlayerbotAI.h"
 #endif
 
-#ifdef ENABLE_MODULES
-#include "ModuleMgr.h"
+#ifdef BUILD_ACHIEVEMENTS
+#include "Achievements/AchievementHooks.h"
 #endif
 
 void WorldSession::HandleQuestgiverStatusQueryOpcode(WorldPacket& recv_data)
@@ -109,18 +109,10 @@ void WorldSession::HandleQuestgiverHelloOpcode(WorldPacket& recv_data)
     if (uint32 pauseTimer = pCreature->GetInteractionPauseTimer())
         pCreature->GetMotionMaster()->PauseWaypoints(pauseTimer);
 
-#ifdef ENABLE_MODULES
-    if (sModuleMgr.OnPreGossipHello(_player, pCreature->GetObjectGuid()))
-        return;
-#endif
-
     if (sScriptDevAIMgr.OnGossipHello(_player, pCreature))
         return;
 
     _player->PrepareGossipMenu(pCreature, pCreature->GetDefaultGossipMenuId());
-#ifdef ENABLE_MODULES
-    sModuleMgr.OnGossipHello(_player, pCreature->GetObjectGuid());
-#endif
     _player->SendPreparedGossip(pCreature);
 }
 
@@ -461,8 +453,8 @@ void WorldSession::HandleQuestLogRemoveQuest(WorldPacket& recv_data)
 
             _player->SetQuestStatus(quest, QUEST_STATUS_NONE);
 
-#ifdef ENABLE_MODULES
-            sModuleMgr.OnAbandonQuest(_player, quest);
+#ifdef BUILD_ACHIEVEMENTS
+            sAchievementHooks.OnAbandonQuest(_player, quest);
 #endif
         }
 

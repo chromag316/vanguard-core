@@ -22,10 +22,6 @@
 #include "Globals/ObjectMgr.h"
 #include "Accounts/AccountMgr.h"
 
-#ifdef ENABLE_MODULES
-#include "ModuleMgr.h"
-#endif
-
 // Character Dump tables
 struct DumpTable
 {
@@ -394,10 +390,6 @@ DumpReturn PlayerDumpWriter::WriteDump(const std::string& file, uint32 guid)
 
     std::string dump = GetDump(guid);
 
-#ifdef ENABLE_MODULES
-    sModuleMgr.OnWriteDump(guid, dump);
-#endif
-
     fprintf(fout, "%s\n", dump.c_str());
     fclose(fout);
     return DUMP_SUCCESS;
@@ -515,17 +507,8 @@ DumpReturn PlayerDumpReader::LoadDump(const std::string& file, uint32 account, s
 
         if (!dTable->isValid())
         {
-#ifdef ENABLE_MODULES
-            type = DTT_CHAR_TABLE;
-            if (!sModuleMgr.IsModuleDumpTable(tn))
-            {
-                sLog.outError("LoadPlayerDump: Unknown table: '%s'!", tn.c_str());
-                ROLLBACK(DUMP_FILE_BROKEN);
-            }
-#else
             sLog.outError("LoadPlayerDump: Unknown table: '%s'!", tn.c_str());
             ROLLBACK(DUMP_FILE_BROKEN);
-#endif
         }
 
         // change the data to server values

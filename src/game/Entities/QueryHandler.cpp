@@ -33,8 +33,8 @@
 #include "Server/SQLStorages.h"
 #include "Maps/GridDefines.h"
 
-#ifdef ENABLE_MODULES
-#include "ModuleMgr.h"
+#ifdef BUILD_ACHIEVEMENTS
+#include "Achievements/AchievementHooks.h"
 #endif
 
 void WorldSession::SendNameQueryResponse(CharacterNameQueryResponse& response) const
@@ -380,8 +380,8 @@ void WorldSession::HandlePageTextQueryOpcode(WorldPacket& recv_data)
 {
     DETAIL_LOG("WORLD: Received opcode CMSG_PAGE_TEXT_QUERY");
 
-#ifdef ENABLE_MODULES
-    if (sModuleMgr.OnHandlePageTextQuery(GetPlayer(), recv_data))
+#ifdef BUILD_ACHIEVEMENTS
+    if (sAchievementHooks.OnHandlePageTextQuery(GetPlayer(), recv_data))
         return;
 #endif
 

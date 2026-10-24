@@ -35,8 +35,8 @@
 #include "Grids/GridNotifiersImpl.h"
 #include "Chat/Chat.h"
 
-#ifdef ENABLE_MODULES
-#include "ModuleMgr.h"
+#ifdef BUILD_ACHIEVEMENTS
+#include "Achievements/AchievementHooks.h"
 #endif
 
 #include <cstdarg>
@@ -849,8 +849,8 @@ void BattleGround::EndBattleGround(Team winner)
     if (winmsg_id && GetTypeId() != BATTLEGROUND_AV)
         SendMessageToAll(winmsg_id, CHAT_MSG_BG_SYSTEM_NEUTRAL);
 
-#ifdef ENABLE_MODULES
-    sModuleMgr.OnEndBattleGround(this, winner);
+#ifdef BUILD_ACHIEVEMENTS
+    sAchievementHooks.OnEndBattleGround(this, winner);
 #endif
 }
 
@@ -1162,8 +1162,8 @@ void BattleGround::RemovePlayerAtLeave(ObjectGuid playerGuid, bool isOnTransport
 
         DETAIL_LOG("BATTLEGROUND: Removed player %s from BattleGround.", player->GetName());
 
-#ifdef ENABLE_MODULES
-        sModuleMgr.OnLeaveBattleGround(this, player);
+#ifdef BUILD_ACHIEVEMENTS
+        sAchievementHooks.OnLeaveBattleGround(this, player);
 #endif
     }
 
@@ -1250,8 +1250,8 @@ void BattleGround::AddPlayer(Player* player)
     // Log
     DETAIL_LOG("BATTLEGROUND: Player %s joined the battle.", player->GetName());
 
-#ifdef ENABLE_MODULES
-    sModuleMgr.OnJoinBattleGround(this, player);
+#ifdef BUILD_ACHIEVEMENTS
+    sAchievementHooks.OnJoinBattleGround(this, player);
 #endif
 }
 

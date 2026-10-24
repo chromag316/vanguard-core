@@ -41,8 +41,8 @@
 #include "playerbot/PlayerbotAIConfig.h"
 #endif
 
-#ifdef ENABLE_MODULES
-#include "ModuleMgr.h"
+#ifdef BUILD_ACHIEVEMENTS
+#include "Achievements/AchievementHooks.h"
 #endif
 
 #include <cstdarg>
@@ -1457,8 +1457,8 @@ void ChatHandler::ExecuteCommand(const char* text)
         }
         case CHAT_COMMAND_UNKNOWN:
         {
-#ifdef ENABLE_MODULES
-            if (sModuleMgr.OnExecuteCommand(this, fullcmd))
+#ifdef BUILD_ACHIEVEMENTS
+            if (sAchievementHooks.OnChatCommand(this, fullcmd))
                 return;
 #endif
 

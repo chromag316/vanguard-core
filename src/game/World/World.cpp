@@ -84,8 +84,8 @@
 #include "playerbot/RandomPlayerbotMgr.h"
 #endif
 
-#ifdef ENABLE_MODULES
-#include "ModuleMgr.h"
+#ifdef BUILD_ACHIEVEMENTS
+#include "Achievements/AchievementHooks.h"
 #endif
 
 #include <algorithm>
@@ -874,8 +874,9 @@ void World::SetInitialWorldSettings()
         exit(1);
     }
 
-#ifdef ENABLE_MODULES
-    sModuleMgr.OnWorldPreInitialized();
+#ifdef BUILD_ACHIEVEMENTS
+    AddAchievementHooks();
+    sAchievementHooks.OnLoadConfig();
 #endif
 
     ///- Loading strings. Getting no records means core load has to be canceled because no error message can be output.
@@ -1457,8 +1458,8 @@ void World::SetInitialWorldSettings()
 #endif
 #endif
 
-#ifdef ENABLE_MODULES
-    sModuleMgr.OnWorldInitialized();
+#ifdef BUILD_ACHIEVEMENTS
+    sAchievementHooks.OnWorldInitialized();
 #endif
 
     sLog.outString("---------------------------------------");
@@ -1730,8 +1731,8 @@ void World::Update(uint32 diff)
     meas.add_field("cleanup", std::to_string(cleanup));
 #endif
 
-#ifdef ENABLE_MODULES
-    sModuleMgr.OnWorldUpdated(diff);
+#ifdef BUILD_ACHIEVEMENTS
+    sAchievementHooks.OnWorldUpdated(diff);
 #endif
 }
 

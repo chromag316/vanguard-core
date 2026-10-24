@@ -25,8 +25,8 @@
 #include "BattleGroundMgr.h"
 #include "Server/WorldPacket.h"
 
-#ifdef ENABLE_MODULES
-#include "ModuleMgr.h"
+#ifdef BUILD_ACHIEVEMENTS
+#include "Achievements/AchievementHooks.h"
 #endif
 
 BattleGroundWS::BattleGroundWS() : m_reputationCapture(0), m_honorWinKills(0), m_honorEndKills(0)
@@ -91,8 +91,8 @@ void BattleGroundWS::StartingEventOpenDoors()
     GetBgMap()->GetGraveyardManager().SetGraveYardLinkTeam(WS_GRAVEYARD_FLAGROOM_ALLIANCE, BG_WS_ZONE_ID_MAIN, TEAM_INVALID);
     GetBgMap()->GetGraveyardManager().SetGraveYardLinkTeam(WS_GRAVEYARD_FLAGROOM_HORDE,    BG_WS_ZONE_ID_MAIN, TEAM_INVALID);
 
-#ifdef ENABLE_MODULES
-    sModuleMgr.OnStartBattleGround(this);
+#ifdef BUILD_ACHIEVEMENTS
+    sAchievementHooks.OnStartBattleGround(this);
 #endif
 }
 
@@ -281,8 +281,8 @@ void BattleGroundWS::ProcessFlagPickUpFromBase(Player* player, Team attackerTeam
     SendMessageToAll(wsgFlagData[otherTeamIdx][BG_WS_FLAG_ACTION_PICKEDUP].messageId, wsgFlagData[teamIdx][BG_WS_FLAG_ACTION_PICKEDUP].chatType, player);
     player->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_PVP_ACTIVE_CANCELS);
 
-#ifdef ENABLE_MODULES
-    sModuleMgr.OnPickUpFlag(this, player, attackerTeam);
+#ifdef BUILD_ACHIEVEMENTS
+    sAchievementHooks.OnPickUpFlag(this, player, attackerTeam);
 #endif
 }
 
@@ -585,8 +585,8 @@ void BattleGroundWS::UpdatePlayerScore(Player* player, uint32 type, uint32 value
             break;
     }
 
-#ifdef ENABLE_MODULES
-    sModuleMgr.OnUpdatePlayerScore(this, player, type, value);
+#ifdef BUILD_ACHIEVEMENTS
+    sAchievementHooks.OnUpdatePlayerScore(this, player, type, value);
 #endif
 }
 

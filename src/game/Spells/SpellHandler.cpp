@@ -30,8 +30,8 @@
 #include "Spells/SpellAuras.h"
 #include "Loot/LootMgr.h"
 
-#ifdef ENABLE_MODULES
-#include "ModuleMgr.h"
+#ifdef BUILD_ACHIEVEMENTS
+#include "Achievements/AchievementHooks.h"
 #endif
 
 void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
@@ -147,8 +147,8 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
         return;
     }
 
-#ifdef ENABLE_MODULES
-    if (sModuleMgr.OnUseItem(pUser, pItem))
+#ifdef BUILD_ACHIEVEMENTS
+    if (sAchievementHooks.OnUseItem(pUser, pItem))
         return;
 #endif
 

@@ -29,8 +29,8 @@
 #include "Util/Util.h"
 #include "Chat/Chat.h"
 
-#ifdef ENABLE_MODULES
-#include "ModuleMgr.h"
+#ifdef BUILD_ACHIEVEMENTS
+#include "Achievements/AchievementHooks.h"
 #endif
 
 // please DO NOT use iterator++, because it is slower than ++iterator!!!
@@ -327,8 +327,8 @@ void WorldSession::HandleAuctionSellItem(WorldPacket& recv_data)
 
     SendAuctionCommandResult(AH, AUCTION_STARTED, AUCTION_OK);
 
-#ifdef ENABLE_MODULES
-    sModuleMgr.OnSellItem(AH, GetPlayer());
+#ifdef BUILD_ACHIEVEMENTS
+    sAchievementHooks.OnSellItem(AH, GetPlayer());
 #endif
 }
 

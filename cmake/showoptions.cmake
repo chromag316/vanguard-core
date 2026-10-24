@@ -73,23 +73,10 @@ else()
   message(STATUS "Build Playerbots      : No  (default)")
 endif()
 
-# Modules
-if(BUILD_MODULES)
-  message(STATUS "Build Modules         : Yes")
-
-  foreach(MODULE_NAME ${MODULE_NAMES})
-    if(NOT ${MODULE_NAME} STREQUAL "MODULES")
-      string(TOLOWER ${MODULE_NAME} LOWER_MODULE_NAME)
-      if(BUILD_MODULE_${MODULE_NAME})
-        message(STATUS "Build ${LOWER_MODULE_NAME} Module : Yes")
-      else()
-        message(STATUS "Build ${LOWER_MODULE_NAME} Module : No (default)")
-      endif()
-	endif()
-  endforeach()
-
+if(BUILD_ACHIEVEMENTS)
+  message(STATUS "Build Achievements    : Yes")
 else()
-  message(STATUS "Build Modules         : No  (default)")
+  message(STATUS "Build Achievements    : No  (default)")
 endif()
 
 if(BUILD_EXTRACTORS)

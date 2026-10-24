@@ -87,7 +87,7 @@ if(MSVC)
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 endif()
 
-# Vanguard: pinned module list and playerbots commit (needed before options.cmake)
+# Vanguard: pinned playerbots and achievements commits
 include(cmake/vanguard-modules.cmake)
 
 # set default buildoptions and print them
@@ -345,15 +345,9 @@ if(BUILD_PLAYERBOTS)
   endif()
 endif()
 
-if(BUILD_MODULES AND NOT BUILD_GAME_SERVER)
-  set(BUILD_MODULES OFF)
-  message(STATUS "BUILD_MODULES forced to OFF due to BUILD_GAME_SERVER is not set")
-endif()
-
-if(NOT BUILD_MODULES)
-  if(EXISTS ${CMAKE_SOURCE_DIR}/src/modules/modules)
-    file(REMOVE_RECURSE ${CMAKE_SOURCE_DIR}/src/modules/modules)
-  endif()
+if(BUILD_ACHIEVEMENTS AND NOT BUILD_GAME_SERVER)
+  set(BUILD_ACHIEVEMENTS OFF)
+  message(STATUS "BUILD_ACHIEVEMENTS forced to OFF due to BUILD_GAME_SERVER is not set")
 endif()
 
 if(PCH)

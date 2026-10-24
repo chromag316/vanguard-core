@@ -36,8 +36,8 @@
 
 #include "Policies/Singleton.h"
 
-#ifdef ENABLE_MODULES
-#include "ModuleMgr.h"
+#ifdef BUILD_ACHIEVEMENTS
+#include "Achievements/AchievementHooks.h"
 #endif
 
 INSTANTIATE_SINGLETON_1(AuctionHouseMgr);
@@ -158,8 +158,8 @@ void AuctionHouseMgr::SendAuctionWonMail(AuctionEntry* auction)
         .AddItem(pItem)
         .SendMailTo(MailReceiver(bidder, bidder_guid), auction, MAIL_CHECK_MASK_COPIED);
 
-#ifdef ENABLE_MODULES
-        sModuleMgr.OnActionBidWinning(auction, ownerGuid, bidder_guid);
+#ifdef BUILD_ACHIEVEMENTS
+        sAchievementHooks.OnAuctionBidWinning(auction, ownerGuid, bidder_guid);
 #endif
     }
     // receiver not exist
@@ -807,8 +807,8 @@ bool AuctionEntry::UpdateBid(uint32 newbid, Player* newbidder /*=nullptr*/)
     bidder = newbidder ? newbidder->GetGUIDLow() : 0;
     bid = newbid;
 
-#ifdef ENABLE_MODULES
-    sModuleMgr.OnUpdateBid(this, newbidder, newbid);
+#ifdef BUILD_ACHIEVEMENTS
+    sAchievementHooks.OnUpdateBid(this, newbidder, newbid);
 #endif
 
     if ((newbid < buyout) || (buyout == 0))                 // bid

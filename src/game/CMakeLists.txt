@@ -130,23 +130,10 @@ if(BUILD_PLAYERBOTS)
   add_dependencies(${LIBRARY_NAME} playerbots)
 endif()
 
-# Add modules to project
-if(BUILD_MODULES)
-  file(GLOB SUBDIRECTORIES LIST_DIRECTORIES true ${CMAKE_SOURCE_DIR}/src/modules/*)
-  foreach(SUBDIR ${SUBDIRECTORIES})
-    get_filename_component(FOLDER_NAME ${SUBDIR} NAME)
-	string(TOUPPER ${FOLDER_NAME} UPPER_FOLDER_NAME)
-    if(BUILD_MODULE_${UPPER_FOLDER_NAME})
-      include_directories(${CMAKE_SOURCE_DIR}/src/modules/${FOLDER_NAME}/src)
-      target_link_libraries(${LIBRARY_NAME} PUBLIC ${FOLDER_NAME})
-      add_dependencies(${LIBRARY_NAME} ${FOLDER_NAME})
-    endif()
-  endforeach()
-
-  include_directories(${CMAKE_SOURCE_DIR}/src/modules/modules/src)
-  target_link_libraries(${LIBRARY_NAME} PUBLIC modules)
-  add_dependencies(${LIBRARY_NAME} modules)
-  add_definitions(-DENABLE_MODULES)
+# Achievements module: the core calls it through Achievements/AchievementHooks.h
+if(BUILD_ACHIEVEMENTS)
+  target_link_libraries(${LIBRARY_NAME} PUBLIC achievements)
+  add_definitions(-DBUILD_ACHIEVEMENTS)
 endif()
 
 if(UNIX)

@@ -27,8 +27,8 @@
 #include "Globals/ObjectMgr.h"
 #include "AI/ScriptDevAI/include/sc_grid_searchers.h"
 
-#ifdef ENABLE_MODULES
-#include "ModuleMgr.h"
+#ifdef BUILD_ACHIEVEMENTS
+#include "Achievements/AchievementHooks.h"
 #endif
 
 BattleGroundAV::BattleGroundAV(): m_mineYellTimer(BG_AV_MINE_YELL), m_honorMapComplete(0), m_repTowerDestruction(0), m_repCaptain(0), m_repBoss(0), m_repOwnedGrave(0), m_repOwnedMine(0), m_repSurviveCaptain(0), m_repSurviveTower(0)
@@ -359,8 +359,8 @@ void BattleGroundAV::StartingEventOpenDoors()
 
     OpenDoorEvent(BG_EVENT_DOOR);
 
-#ifdef ENABLE_MODULES
-    sModuleMgr.OnStartBattleGround(this);
+#ifdef BUILD_ACHIEVEMENTS
+    sAchievementHooks.OnStartBattleGround(this);
 #endif
 }
 
@@ -494,8 +494,8 @@ void BattleGroundAV::UpdatePlayerScore(Player* source, uint32 type, uint32 value
             break;
     }
 
-#ifdef ENABLE_MODULES
-    sModuleMgr.OnUpdatePlayerScore(this, source, type, value);
+#ifdef BUILD_ACHIEVEMENTS
+    sAchievementHooks.OnUpdatePlayerScore(this, source, type, value);
 #endif
 }
 

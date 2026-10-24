@@ -88,7 +88,7 @@ const char TaxiPathNodeEntryfmt[] = "diiifffii";
 const char WMOAreaTableEntryfmt[] = "niiixxxxxiissssssssx";
 const char WorldMapAreaEntryfmt[] = "xinxffff";
 const char TransportAnimationfmt[] = "diifffx";
-#ifdef ENABLE_MODULES
+#ifdef BUILD_ACHIEVEMENTS
 const char WorldMapOverlayEntryfmt[]="nxiiiixxxxxxxxxxx";
 #else
 // const char WorldMapOverlayEntryfmt[]="nxiiiixxxxxxxxxxx";

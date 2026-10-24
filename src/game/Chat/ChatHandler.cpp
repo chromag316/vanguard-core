@@ -42,8 +42,8 @@
 #include "playerbot/RandomPlayerbotMgr.h"
 #endif
 
-#ifdef ENABLE_MODULES
-#include "ModuleMgr.h"
+#ifdef BUILD_ACHIEVEMENTS
+#include "Achievements/AchievementHooks.h"
 #endif
 
 bool WorldSession::CheckChatMessage(std::string& msg, bool addon/* = false*/)
@@ -801,8 +801,8 @@ void WorldSession::HandleTextEmoteOpcode(WorldPacket& recv_data)
     if (unit && unit->AI())
         unit->AI()->ReceiveEmote(GetPlayer(), textEmote);
 
-#ifdef ENABLE_MODULES
-    sModuleMgr.OnEmote(GetPlayer(), unit, textEmote);
+#ifdef BUILD_ACHIEVEMENTS
+    sAchievementHooks.OnEmote(GetPlayer(), unit, textEmote);
 #endif
 }
 

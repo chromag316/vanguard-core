@@ -29,8 +29,8 @@
 #include "Social/SocialMgr.h"
 #include "Server/DBCStores.h"
 
-#ifdef ENABLE_MODULES
-#include "ModuleMgr.h"
+#ifdef BUILD_ACHIEVEMENTS
+#include "Achievements/AchievementHooks.h"
 #endif
 
 void WorldSession::SendTradeStatus(TradeStatusInfo const& info) const
@@ -497,8 +497,8 @@ void WorldSession::HandleAcceptTradeOpcode(WorldPacket& recvPacket)
         trader->SaveInventoryAndGoldToDB();
         CharacterDatabase.CommitTransaction();
 
-#ifdef ENABLE_MODULES
-        sModuleMgr.OnTradeAccepted(_player, trader, my_trade, his_trade);
+#ifdef BUILD_ACHIEVEMENTS
+        sAchievementHooks.OnTradeAccepted(_player, trader, my_trade, his_trade);
 #endif
 
         info.Status = TRADE_STATUS_TRADE_COMPLETE;
