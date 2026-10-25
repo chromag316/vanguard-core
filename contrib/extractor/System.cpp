@@ -104,6 +104,7 @@ const char* CONF_mpq_list[] =
     "terrain.MPQ",
     "patch.MPQ",
     "patch-2.MPQ",
+    "patch-3.MPQ",   // Vanguard content pack (Stormwind Harbor); optional, skipped if absent
 };
 
 void CreateDir(const std::string& Path)
