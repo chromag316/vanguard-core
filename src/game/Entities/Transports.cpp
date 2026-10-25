@@ -414,15 +414,8 @@ void Transport::Update(const uint32 /*diff*/)
             m_lastStopNode = node;
 
         uint32 eventId = IsMoving() ? GetGOInfo()->moTransport.startEventID : GetGOInfo()->moTransport.stopEventID;
-        // TEMP diagnostics for the ship bells
-        sLog.outString("Transport %s (%u) %s at node %u (map %u, %.0f, %.0f): event %u ready %u sameStop %u",
-                       GetName(), GetEntry(), IsMoving() ? "departs" : "arrives", node->index, node->mapid, node->x, node->y,
-                       eventId, uint32(m_eventsReady), uint32(sameStop));
         if (m_eventsReady && !sameStop && eventId)
-        {
-            bool started = StartEvents_Event(GetMap(), eventId, this, this);
-            sLog.outString("Transport %s: StartEvents_Event(%u) returned %u", GetName(), eventId, uint32(started));
-        }
+            StartEvents_Event(GetMap(), eventId, this, this);
     }
     m_eventsReady = true;
 
