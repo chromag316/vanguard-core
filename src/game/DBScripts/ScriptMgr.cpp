@@ -1349,7 +1349,8 @@ bool ScriptAction::GetScriptCommandObject(const ObjectGuid guid, bool includeIte
             return false;
     }
 
-    if (resultObject && !resultObject->IsInWorld())
+    // Ships and zeppelins are never IsInWorld() (they are not in the grid), but they are on the map
+    if (resultObject && !resultObject->IsInWorld() && guid.GetHigh() != HIGHGUID_MO_TRANSPORT)
         resultObject = nullptr;
 
     return true;
