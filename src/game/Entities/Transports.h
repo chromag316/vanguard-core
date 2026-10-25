@@ -105,6 +105,7 @@ class Transport : public GenericTransport
         ShortTimeTracker m_positionChangeTimer;
         bool m_isMoving;
         bool m_pendingStop;
+        bool m_eventsReady;                                 // false until the first update, so a docked ship does not fire at server start
 
         KeyFrameVec::const_iterator m_currentFrame;
         KeyFrameVec::const_iterator m_nextFrame;

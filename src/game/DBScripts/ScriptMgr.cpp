@@ -3403,6 +3403,10 @@ void ScriptMgr::CollectPossibleEventIds(std::set<uint32>& eventIds)
             case GAMEOBJECT_TYPE_CAMERA:
                 eventIds.insert(itr->camera.eventID);
                 break;
+            case GAMEOBJECT_TYPE_MO_TRANSPORT:
+                eventIds.insert(itr->moTransport.startEventID);
+                eventIds.insert(itr->moTransport.stopEventID);
+                break;
             case GAMEOBJECT_TYPE_CAPTURE_POINT:
                 eventIds.insert(itr->capturePoint.neutralEventID1);
                 eventIds.insert(itr->capturePoint.neutralEventID2);

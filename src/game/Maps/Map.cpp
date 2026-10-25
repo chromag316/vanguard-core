@@ -2395,7 +2395,7 @@ WorldObject* Map::GetWorldObject(ObjectGuid guid)
             Corpse* corpse = GetCorpse(guid);
             return corpse && corpse->IsInWorld() ? corpse : nullptr;
         }
-        case HIGHGUID_MO_TRANSPORT:
+        case HIGHGUID_MO_TRANSPORT: return GetTransport(guid);   // e.g. event scripts started by a ship
         default:                    break;
     }
 

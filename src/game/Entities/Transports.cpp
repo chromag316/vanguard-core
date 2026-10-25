@@ -26,6 +26,7 @@
 
 #include "Server/WorldPacket.h"
 #include "Server/DBCStores.h"
+#include "DBScripts/ScriptMgr.h"
 #include "Util/ProgressBar.h"
 
 #include "Movement/MoveSpline.h"
@@ -115,7 +116,7 @@ void MapManager::LoadTransports()
     sLog.outString();
 }
 
-Transport::Transport(TransportTemplate const& transportTemplate) : GenericTransport(), m_isMoving(true), m_pendingStop(false), m_transportTemplate(transportTemplate)
+Transport::Transport(TransportTemplate const& transportTemplate) : GenericTransport(), m_isMoving(true), m_pendingStop(false), m_eventsReady(false), m_transportTemplate(transportTemplate)
 {
     m_updateFlag = (UPDATEFLAG_TRANSPORT | UPDATEFLAG_ALL | UPDATEFLAG_HAS_POSITION);
 }
@@ -362,6 +363,7 @@ void Transport::Update(const uint32 /*diff*/)
     if (IsMoving() || !m_pendingStop)
         m_pathProgress = currentMsTime;
 
+    bool const wasMoving = IsMoving();
     uint32 pathProgress = m_pathProgress % GetPeriod();
     while (true)
     {
@@ -391,6 +393,15 @@ void Transport::Update(const uint32 /*diff*/)
 
         DETAIL_FILTER_LOG(LOG_FILTER_TRANSPORT_MOVES, "%s moved to %f %f %f %d", GetName(), m_currentFrame->Node->x, m_currentFrame->Node->y, m_currentFrame->Node->z, m_currentFrame->Node->mapid);
     }
+
+    // Arrival and departure events (gameobject_template data4 / data3), e.g. ship bells
+    if (m_eventsReady && wasMoving != IsMoving())
+    {
+        uint32 eventId = IsMoving() ? GetGOInfo()->moTransport.startEventID : GetGOInfo()->moTransport.stopEventID;
+        if (eventId)
+            StartEvents_Event(GetMap(), eventId, this, this);
+    }
+    m_eventsReady = true;
 
     // Set position
     m_positionChangeTimer.Update(diff);
