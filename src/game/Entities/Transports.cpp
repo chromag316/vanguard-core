@@ -116,7 +116,7 @@ void MapManager::LoadTransports()
     sLog.outString();
 }
 
-Transport::Transport(TransportTemplate const& transportTemplate) : GenericTransport(), m_isMoving(true), m_pendingStop(false), m_eventsReady(false), m_transportTemplate(transportTemplate)
+Transport::Transport(TransportTemplate const& transportTemplate) : GenericTransport(), m_isMoving(true), m_pendingStop(false), m_eventsReady(false), m_lastStopNode(nullptr), m_transportTemplate(transportTemplate)
 {
     m_updateFlag = (UPDATEFLAG_TRANSPORT | UPDATEFLAG_ALL | UPDATEFLAG_HAS_POSITION);
 }
@@ -394,11 +394,19 @@ void Transport::Update(const uint32 /*diff*/)
         DETAIL_FILTER_LOG(LOG_FILTER_TRANSPORT_MOVES, "%s moved to %f %f %f %d", GetName(), m_currentFrame->Node->x, m_currentFrame->Node->y, m_currentFrame->Node->z, m_currentFrame->Node->mapid);
     }
 
-    // Arrival and departure events (gameobject_template data4 / data3), e.g. ship bells
-    if (m_eventsReady && wasMoving != IsMoving())
+    // Arrival and departure events (gameobject_template data4 / data3), e.g. ship bells.
+    // A stop at the same place as the previous one is the same stay, not a new arrival: the
+    // Feathermoon ferry's path wraps at its Forgotten Coast dock, splitting one stop in two.
+    if (wasMoving != IsMoving())
     {
+        TaxiPathNodeEntry const* node = m_currentFrame->Node;
+        bool const sameStop = !IsMoving() && m_lastStopNode && m_lastStopNode->mapid == node->mapid &&
+                              std::fabs(m_lastStopNode->x - node->x) < 1.0f && std::fabs(m_lastStopNode->y - node->y) < 1.0f;
+        if (!IsMoving())
+            m_lastStopNode = node;
+
         uint32 eventId = IsMoving() ? GetGOInfo()->moTransport.startEventID : GetGOInfo()->moTransport.stopEventID;
-        if (eventId)
+        if (m_eventsReady && !sameStop && eventId)
             StartEvents_Event(GetMap(), eventId, this, this);
     }
     m_eventsReady = true;
