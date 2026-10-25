@@ -347,6 +347,14 @@ bool GenericTransport::AddPetToTransport(Unit* passenger, Pet* pet)
     return false;
 }
 
+// Ships and zeppelins are never added to the grid, so they are not IsInWorld() and
+// WorldObject::SendMessageToSet drops their packets. Deliver to the players around the
+// transport's position instead, e.g. a sound played from the ship by an event script.
+void Transport::SendMessageToSet(WorldPacket const& data, bool /*self*/) const
+{
+    GetMap()->MessageBroadcast(this, data);
+}
+
 void Transport::Update(const uint32 /*diff*/)
 {
     uint32 const positionUpdateDelay = 50;
