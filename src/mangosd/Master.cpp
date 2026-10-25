@@ -45,6 +45,9 @@
 #include <boost/thread.hpp>
 
 #include <memory>
+#include <chrono>
+#include <cstdlib>
+#include <thread>
 
 #ifdef _WIN32
 #include "Platform/ServiceWin32.h"
@@ -301,6 +304,15 @@ int Master::Run()
     LogsDatabase.HaltDelayThread();
 
     sLog.outString("Halting process...");
+
+    // Vanguard: everything is saved by now. Exit can still hang intermittently (detached playerbots
+    // threads outliving the world), so force it if the remaining teardown takes too long.
+    std::thread([]()
+    {
+        std::this_thread::sleep_for(std::chrono::seconds(30));
+        sLog.outError("Shutdown did not finish within 30 s after halting; forcing exit.");
+        std::_Exit(World::GetExitCode());
+    }).detach();
 
     if (cliThread)
     {
