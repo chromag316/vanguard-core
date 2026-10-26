@@ -92,7 +92,9 @@ std::vector<std::pair<WorldStateID, uint32>> aqWorldStateTotalsMap =
     {WORLD_STATE_AQ_RUNECLOTH_BANDAGE_TOTAL, 200000},
 };
 
-WorldState::WorldState() : m_emeraldDragonsState(0xF), m_emeraldDragonsTimer(0), m_emeraldDragonsChosenPositions(4, 0)
+static const uint32 EMERALD_DRAGONS_CHECK_INTERVAL = 1 * MINUTE * IN_MILLISECONDS;
+
+WorldState::WorldState() : m_emeraldDragonsState(0xF), m_emeraldDragonsTimer(0), m_emeraldDragonsCheckTimer(EMERALD_DRAGONS_CHECK_INTERVAL), m_emeraldDragonsChosenPositions(4, 0)
 {
     memset(m_loveIsInTheAirData.counters, 0, sizeof(LoveIsInTheAir));
 
@@ -501,6 +503,16 @@ void WorldState::Update(const uint32 diff)
         else m_emeraldDragonsTimer -= diff;
     }
 
+    // Dragons still marked alive can vanish (GM despawn, crash, etc.), which would stall the
+    // cycle because the respawn timer only starts once all four have died. Put them back.
+    if (m_emeraldDragonsCheckTimer <= diff)
+    {
+        m_emeraldDragonsCheckTimer = EMERALD_DRAGONS_CHECK_INTERVAL;
+        if (m_emeraldDragonsState != 0xF)
+            SpawnMissingEmeraldDragons();
+    }
+    else m_emeraldDragonsCheckTimer -= diff;
+
     if (m_aqData.m_timer)
     {
         if (m_aqData.m_timer <= diff)
@@ -610,23 +622,47 @@ void WorldState::RespawnEmeraldDragons()
         m_emeraldDragonsState = 0;
         Save(SAVE_ID_EMERALD_DRAGONS);
     }
-    sMapMgr.DoForAllMapsWithMapId(0, [&](Map* map)
+    SpawnMissingEmeraldDragons();
+}
+
+void WorldState::SpawnMissingEmeraldDragons()
+{
+    for (uint32 slot = 0; slot < 4; ++slot)
     {
-        if (IsDragonSpawned(m_emeraldDragonsChosenPositions[0]))
+        uint32 entry = m_emeraldDragonsChosenPositions[slot];
+        if (!IsDragonSpawned(entry))
+            continue;
+
+        // slots 0-1 are in Eastern Kingdoms, 2-3 in Kalimdor; summon on the map thread
+        sMapMgr.DoForAllMapsWithMapId(slot < 2 ? 0 : 1, [slot, entry](Map* map)
         {
-            if (Creature* duskwoodDragon = WorldObject::SummonCreature(TempSpawnSettings(nullptr, m_emeraldDragonsChosenPositions[0], emeraldDragonSpawns[0][0], emeraldDragonSpawns[0][1], emeraldDragonSpawns[0][2], emeraldDragonSpawns[0][3], TEMPSPAWN_DEAD_DESPAWN, 0, false, false, pathIds[0]), map))
-                duskwoodDragon->GetMotionMaster()->MoveWaypoint(pathIds[0]);
-        }
-        if (IsDragonSpawned(m_emeraldDragonsChosenPositions[1]))
-            WorldObject::SummonCreature(TempSpawnSettings(nullptr, m_emeraldDragonsChosenPositions[1], emeraldDragonSpawns[1][0], emeraldDragonSpawns[1][1], emeraldDragonSpawns[1][2], emeraldDragonSpawns[1][3], TEMPSPAWN_DEAD_DESPAWN, 0, false, false, pathIds[1]), map);
-    });
-    sMapMgr.DoForAllMapsWithMapId(1, [&](Map* map)
+            map->GetMessager().AddMessage([slot, entry](Map* map)
+            {
+                sWorldState.SummonEmeraldDragonIfMissing(map, slot, entry);
+            });
+        });
+    }
+}
+
+void WorldState::SummonEmeraldDragonIfMissing(Map* map, uint32 slot, uint32 entry)
+{
     {
-        if (IsDragonSpawned(m_emeraldDragonsChosenPositions[2]))
-            WorldObject::SummonCreature(TempSpawnSettings(nullptr, m_emeraldDragonsChosenPositions[2], emeraldDragonSpawns[2][0], emeraldDragonSpawns[2][1], emeraldDragonSpawns[2][2], emeraldDragonSpawns[2][3], TEMPSPAWN_DEAD_DESPAWN, 0, false, false, pathIds[2]), map);
-        if (IsDragonSpawned(m_emeraldDragonsChosenPositions[3]))
-            WorldObject::SummonCreature(TempSpawnSettings(nullptr, m_emeraldDragonsChosenPositions[3], emeraldDragonSpawns[3][0], emeraldDragonSpawns[3][1], emeraldDragonSpawns[3][2], emeraldDragonSpawns[3][3], TEMPSPAWN_DEAD_DESPAWN, 0, false, false, pathIds[3]), map);
-    });
+        // the dragon may have died or a new cycle may have rolled since the message was queued
+        std::lock_guard<std::mutex> guard(m_mutex);
+        if (m_emeraldDragonsChosenPositions[slot] != entry || !IsDragonSpawned(entry))
+            return;
+    }
+
+    if (map->GetCreature(m_emeraldDragonsGuids[slot]))
+        return;
+
+    // active object: keeps the grid loaded, otherwise grid unload deletes the temp spawn for good
+    if (Creature* dragon = WorldObject::SummonCreature(TempSpawnSettings(nullptr, entry, emeraldDragonSpawns[slot][0], emeraldDragonSpawns[slot][1], emeraldDragonSpawns[slot][2], emeraldDragonSpawns[slot][3], TEMPSPAWN_DEAD_DESPAWN, 0, true, false, pathIds[slot]), map))
+    {
+        if (pathIds[slot])
+            dragon->GetMotionMaster()->MoveWaypoint(pathIds[slot]);
+        m_emeraldDragonsGuids[slot] = dragon->GetObjectGuid();
+    }
 }
 
 // War effort section

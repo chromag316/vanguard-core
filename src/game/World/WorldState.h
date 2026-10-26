@@ -437,10 +437,14 @@ class WorldState
         // vanilla section
         bool IsDragonSpawned(uint32 entry);
         void RespawnEmeraldDragons();
+        void SpawnMissingEmeraldDragons();
+        void SummonEmeraldDragonIfMissing(Map* map, uint32 slot, uint32 entry);
 
         uint8 m_emeraldDragonsState;
         uint32 m_emeraldDragonsTimer;
+        uint32 m_emeraldDragonsCheckTimer;
         std::vector<uint32> m_emeraldDragonsChosenPositions;
+        ObjectGuid m_emeraldDragonsGuids[4]; // only touched from the map thread that owns the slot
         AhnQirajData m_aqData;
         std::map<uint32, AQResources> m_aqWorldstateMapReverse;
 
