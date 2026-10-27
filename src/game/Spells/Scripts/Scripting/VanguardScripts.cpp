@@ -26,7 +26,7 @@
 #include "playerbot/PlayerbotMgr.h"
 #endif
 
-// 90001 - Calling companion: a copy of Hearthstone (10-second cast) that a player casts to
+// 90001 - Summoning: a copy of Hearthstone (10-second cast) that a player casts to
 // summon a companion. When it completes, the companion it was cast for comes (playerbots).
 struct CallingCompanion : public SpellScript
 {
