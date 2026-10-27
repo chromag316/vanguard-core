@@ -919,6 +919,7 @@ ChatCommand* ChatHandler::getCommandTable()
         { "ahbot",            SEC_GAMEMASTER,    true,  &ChatHandler::HandleAhBotCommand,                      "", NULL },
 #endif
         { "rndbot",           SEC_GAMEMASTER,    true,  &ChatHandler::HandleRandomPlayerbotCommand,     "", NULL },
+        { "gambit",           SEC_ADMINISTRATOR, true,  &ChatHandler::HandleGambitCommand,              "", NULL },
         { "bot",              SEC_PLAYER,        false, &ChatHandler::HandlePlayerbotCommand,               "", NULL },
         { "pmon",             SEC_GAMEMASTER,    true,  &ChatHandler::HandlePerfMonCommand,           "" },
 #endif
