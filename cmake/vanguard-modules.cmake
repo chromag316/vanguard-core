@@ -3,7 +3,7 @@
 
 # Playerbots (src/CMakeLists.txt, BUILD_PLAYERBOTS)
 set(PLAYERBOTS_GIT_REPOSITORY "https://github.com/chromag316/vanguard-playerbots.git" CACHE STRING "Playerbots repository")
-set(PLAYERBOTS_GIT_TAG "8608480d340e0d056f001dbcc7a7970698411533" CACHE STRING "Playerbots commit")
+set(PLAYERBOTS_GIT_TAG "6c51e116f1fa45ea3a82115714c25a3872429d90" CACHE STRING "Playerbots commit")
 
 # Achievements module (src/CMakeLists.txt, BUILD_ACHIEVEMENTS)
 set(ACHIEVEMENTS_GIT_REPOSITORY "https://github.com/chromag316/vanguard-achievements-module.git" CACHE STRING "Achievements module repository")
