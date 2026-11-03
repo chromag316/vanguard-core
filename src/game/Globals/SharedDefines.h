@@ -43,24 +43,25 @@ enum Races
     RACE_GNOME              = 7,
     RACE_TROLL              = 8,
     RACE_GOBLIN             = 9,
+    RACE_HIGH_ELF           = 10,                           // Vanguard: Turtle WoW's High Elf (ChrRaces "BloodElf")
 };
 
 
 // max+1 for player race
-#define MAX_RACES         9
+#define MAX_RACES         11
 
 constexpr uint32 const RACEMASK_ALL_PLAYABLE = convertEnumToFlag
 (
     RACE_HUMAN,    RACE_ORC,    RACE_DWARF,
     RACE_NIGHTELF, RACE_UNDEAD, RACE_TAUREN,
-    RACE_GNOME,    RACE_TROLL
+    RACE_GNOME,    RACE_TROLL,  RACE_HIGH_ELF
 );
 
 // for most cases batter use ChrRace data for team check as more safe, but when need full mask of team can be use this defines.
 constexpr uint32 const RACEMASK_ALLIANCE = convertEnumToFlag
 (
     RACE_HUMAN, RACE_DWARF, RACE_NIGHTELF,
-    RACE_GNOME
+    RACE_GNOME, RACE_HIGH_ELF
 );
 constexpr uint32 const RACEMASK_HORDE = convertEnumToFlag
 (

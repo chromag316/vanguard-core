@@ -3778,7 +3778,8 @@ void Spell::EffectScriptEffect(SpellEffectIndex eff_idx)
                         case 24194:
                             switch (race)
                             {
-                                case RACE_HUMAN:            spellId = 24105; break;
+                                case RACE_HUMAN:
+                                case RACE_HIGH_ELF:         spellId = 24105; break;
                                 case RACE_DWARF:            spellId = 24107; break;
                                 case RACE_NIGHTELF:         spellId = 24108; break;
                                 case RACE_GNOME:            spellId = 24106; break;
