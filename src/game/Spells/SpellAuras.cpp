@@ -1377,6 +1377,10 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                 case 19697: finalSpellId = 19683; break;
                 case 19699: finalSpellId = 19685; break;
                 case 19700: finalSpellId = 19686; break;
+                // Vanguard: High Elf hunter quests (Turtle WoW's Taming the Beast, Alah'Thalas)
+                case 46090: finalSpellId = 46091; break;    // Elder Crimson Lynx
+                case 46092: finalSpellId = 46093; break;    // Ivory Hawkstrider
+                case 46094: finalSpellId = 46095; break;    // Lavender Mana Wyrm
             }
 
             if (finalSpellId)
