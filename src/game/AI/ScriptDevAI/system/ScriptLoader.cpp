@@ -20,6 +20,7 @@ extern void AddSC_areatrigger_scripts();
 extern void AddSC_bosses_emerald_dragons();
 extern void AddSC_generic_creature();
 extern void AddSC_go_scripts();
+extern void AddSC_vanguard_alahthalas();             // Vanguard: High Elf zones
 extern void AddSC_guards();
 extern void AddSC_item_scripts();
 extern void AddSC_npc_professions();
@@ -225,6 +226,7 @@ void AddScripts()
     AddSC_bosses_emerald_dragons();
     AddSC_generic_creature();
     AddSC_go_scripts();
+    AddSC_vanguard_alahthalas();
     AddSC_guards();
     AddSC_item_scripts();
     AddSC_npc_professions();
